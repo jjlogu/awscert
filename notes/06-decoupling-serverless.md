@@ -5,7 +5,9 @@
 |---|---|---|---|
 | 2.1 (primary), 2.2, 3.2 | ~2.5 hrs | [Lab 06](../labs/lab-06-serverless-decoupled.md) | [D2 questions](../practice/d2-resilient.md) |
 
-Task 2.1 ("design scalable and loosely coupled architectures") names more services than any other task statement. The typical question describes a tightly coupled system that breaks under load, or when one component fails. It then asks which managed integration service fixes it with the **least operational overhead**. You already know how to call these services from code. The exam tests whether you can pick between them from one sentence of requirements.
+> **New to AWS?** Read these plain-English pages first: [Integration & messaging services](../beginner/services/integration.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
+Task 2.1 ("design scalable and loosely coupled architectures") names more services than any other task statement. The typical question describes a tightly coupled system that breaks under load, or when one component fails. It then asks which managed integration service fixes it with the **least operational overhead**. You don't need to know how to call these services from code. The exam tests whether you can pick between them from one sentence of requirements.
 
 ---
 

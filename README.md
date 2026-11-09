@@ -1,6 +1,6 @@
 # AWS Certified Solutions Architect – Associate (SAA-C03): Study Guide
 
-A 5-week, about 75-hour study guide for an experienced software developer moving into architecture. It assumes you already build on AWS (EC2, S3, Lambda, RDS). It spends the most time on what developers usually haven't had to design: **networking, identity across accounts, hybrid connectivity, resilience/DR and cost**.
+A study guide of about 95 hours (**Week 0 foundations + 5 weeks**, plus an optional buffer week) for an experienced software developer moving into architecture. **No prior AWS knowledge is assumed.** If your only AWS contact has been EKS through `kubectl`, start with the **[Beginner track](beginner/README.md)**. It explains every exam service in plain English and maps your Kubernetes knowledge onto AWS. The notes modules then go to exam depth, with the most time on **networking, identity across accounts, hybrid connectivity, resilience/DR and cost**.
 
 > Exam facts last verified against official AWS pages on **2026-11-05**. Re-check the [official exam page](https://aws.amazon.com/certification/certified-solutions-architect-associate/) before you book.
 
@@ -39,16 +39,17 @@ AWS says exam-guide updates reach the live exam about **one month** after public
 Each topic follows the same loop:
 
 ```
-Read the notes module  →  Do the matching lab  →  Answer the domain questions  →  Log every miss
-        ↑                                                                            |
-        └──────────────── review your error log every Sunday ────────────────────────┘
+Beginner service page  →  Notes module  →  Matching lab  →  Domain questions  →  Log every miss
+        ↑                                                                              |
+        └───────────────── review your error log every Sunday ─────────────────────────┘
 ```
 
-1. Start with the **[Study plan](00-study-plan.md)**. It tells you what to do each day.
-2. Read **[Exam strategy](01-exam-strategy.md)** once in week 1 and again in week 5.
-3. Do **[Lab safety](labs/README.md)** before any lab: MFA, a budget alert, and the cleanup habit.
-4. In week 5, take the **[65-question mock](practice/mock-exam-65.md)** timed, plus at least two reputable external mocks.
-5. Book the exam when you score **≥ 80% on two full mocks taken cold**.
+1. **New to AWS?** Do the [Beginner track](beginner/README.md) first (Week 0 of the plan). Keep the [glossary](beginner/glossary.md) and [all services A–Z](beginner/services/README.md) open while you study.
+2. Follow the **[Study plan](00-study-plan.md)**. It tells you what to do each day.
+3. Read **[Exam strategy](01-exam-strategy.md)** once in week 1 and again in week 5.
+4. Do **[Lab safety](labs/README.md)** before any lab: MFA, a budget alert, and the cleanup habit.
+5. In week 5, take the **[65-question mock](practice/mock-exam-65.md)** timed, plus at least two reputable external mocks.
+6. Book the exam when you score **≥ 80% on two full mocks taken cold**.
 
 ---
 
@@ -57,6 +58,8 @@ Read the notes module  →  Do the matching lab  →  Answer the domain question
 | Area | Files |
 |---|---|
 | Plan & strategy | [00 Study plan](00-study-plan.md) · [01 Exam strategy](01-exam-strategy.md) |
+| **Beginner track** (start here if new to AWS) | [Index](beginner/README.md) · [Cloud & AWS basics](beginner/01-cloud-and-aws-basics.md) · [Networking basics](beginner/02-networking-basics.md) · [Kubernetes → AWS map](beginner/03-kubernetes-to-aws.md) · [Glossary](beginner/glossary.md) |
+| **AWS services explained** (one section per service) | [All services A–Z](beginner/services/README.md) · [Identity & governance](beginner/services/identity-governance.md) · [Security](beginner/services/security.md) · [Networking](beginner/services/networking.md) · [Compute](beginner/services/compute.md) · [Containers](beginner/services/containers.md) · [Storage](beginner/services/storage.md) · [Databases](beginner/services/databases.md) · [Integration](beginner/services/integration.md) · [Analytics](beginner/services/analytics.md) · [Migration & transfer](beginner/services/migration-transfer.md) · [Management & monitoring](beginner/services/management-monitoring.md) · [Cost management](beginner/services/cost-management.md) · [AI & ML](beginner/services/ai-ml.md) |
 | **Notes** (topic modules) | [01 IAM & multi-account](notes/01-iam-multi-account.md) · [02 Networking & VPC](notes/02-networking-vpc.md) · [03 Compute & containers](notes/03-compute-containers.md) · [04 Storage](notes/04-storage.md) · [05 Databases](notes/05-databases.md) · [06 Decoupling & serverless](notes/06-decoupling-serverless.md) · [07 Security & data protection](notes/07-security-data-protection.md) · [08 HA, DR, edge & operations](notes/08-ha-dr-edge-ops.md) · [09 Data, analytics & migration](notes/09-data-analytics-migration.md) · [10 Cost optimization](notes/10-cost-optimization.md) |
 | **Cheat sheets** | [Decision tables](cheatsheets/decision-tables.md) · [Exam keywords → answers](cheatsheets/exam-keywords.md) · [Numbers to remember](cheatsheets/numbers-to-remember.md) |
 | **Practice** | [How to practice](practice/README.md) · [D1 Secure](practice/d1-secure.md) · [D2 Resilient](practice/d2-resilient.md) · [D3 High-performing](practice/d3-high-performing.md) · [D4 Cost-optimized](practice/d4-cost-optimized.md) · [Full 65-Q mock](practice/mock-exam-65.md) |
@@ -92,9 +95,15 @@ The notes are organized **by topic**, because S3, VPC and databases show up in e
 
 Tick these off as you go. VS Code's Markdown preview and GitHub both render checkboxes.
 
+**Week 0: Foundations (new to AWS)**
+- [ ] Lab safety setup (study account, root MFA, budget alert)
+- [ ] [Cloud & AWS basics](beginner/01-cloud-and-aws-basics.md)
+- [ ] [Networking basics](beginner/02-networking-basics.md), including the CIDR exercises
+- [ ] [Kubernetes → AWS map](beginner/03-kubernetes-to-aws.md)
+- [ ] All ★★★ services on the [service pages](beginner/services/README.md)
+
 **Week 1: Identity & networking**
 - [ ] Baseline: AWS Skill Builder Official Practice Question Set, taken cold (score: ___ )
-- [ ] Lab safety setup (MFA, budget alert)
 - [ ] Notes 01 IAM & multi-account · [ ] Lab 01
 - [ ] Notes 02 Networking & VPC · [ ] Lab 02
 - [ ] D1 questions 1–8

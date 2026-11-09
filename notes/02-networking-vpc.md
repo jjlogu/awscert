@@ -6,6 +6,8 @@
 |---|---|---|---|
 | 1.2, 3.4, 4.4 (plus network parts of 2.2) | ~5 hrs | [Lab 02](../labs/lab-02-custom-vpc.md) | [D1 questions](../practice/d1-secure.md) · [D4 questions](../practice/d4-cost-optimized.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Networking basics](../beginner/02-networking-basics.md) · [Networking services](../beginner/services/networking.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Networking is where developers lose the most points. Most questions don't ask "what is a subnet". They describe a symptom ("instances in the private subnet can't download patches", "the on-prem team can't resolve the private hosted zone", "the NAT bill is huge") and ask for the design change. This module builds up from addressing to multi-VPC and hybrid designs, and ends with the cost paths. Draw the diagrams yourself as you read: the exam rewards people who can picture the packet path.
 
 ---

@@ -5,6 +5,8 @@
 |---|---|---|---|
 | 1.3, 3.1, 4.1, 2.2 | ~3.5 hrs | [Lab 04](../labs/lab-04-s3-cloudfront.md) | [D3 questions](../practice/d3-high-performing.md) · [D4 questions](../practice/d4-cost-optimized.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Storage services](../beginner/services/storage.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Storage comes up in every domain. D3 asks which volume, file system or S3 feature meets a performance target. D4 asks for the cheapest class or tier that still fits the access pattern. D1 asks how the data is encrypted, locked and kept private. D2 asks how it survives the loss of an AZ or a Region. You'll rarely be asked what a service is. You'll be asked to pick the cheapest option that still meets a latency, durability or compliance constraint.
 
 ---

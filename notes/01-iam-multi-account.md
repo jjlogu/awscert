@@ -6,7 +6,9 @@
 |---|---|---|---|
 | 1.1 (primary), 1.2, 1.3, 4.1–4.4 (multi-account billing) | ~4 hrs | [Lab 01](../labs/lab-01-account-iam.md) | [D1 questions](../practice/d1-secure.md) |
 
-Almost every SAA-C03 scenario has an access question hidden inside it: *who* calls *what*, from *which account*, with *which credentials*. As a developer you have written IAM policies. What the exam adds is the architect's view: how several policy types combine, how identities cross account boundaries, and how an organization of dozens of accounts is governed centrally. Encryption keys, secrets and threat detection are in [module 07](07-security-data-protection.md). Network isolation is in [module 02](02-networking-vpc.md).
+> **New to AWS?** Read these plain-English pages first: [Identity & governance services](../beginner/services/identity-governance.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
+Almost every SAA-C03 scenario has an access question hidden inside it: *who* calls *what*, from *which account*, with *which credentials*. This module assumes you've read the [IAM beginner section](../beginner/services/identity-governance.md#aws-iam) (users, roles, policies, allow/deny). It adds the architect's view the exam tests: how several policy types combine, how identities cross account boundaries, and how an organization of dozens of accounts is governed centrally. Encryption keys, secrets and threat detection are in [module 07](07-security-data-protection.md). Network isolation is in [module 02](02-networking-vpc.md).
 
 ---
 

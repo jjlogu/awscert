@@ -6,6 +6,8 @@
 |---|---|---|---|
 | 2.2 (primary), 2.1, 3.4, 4.4 | ~4 hrs | [Lab 08](../labs/lab-08-iac-backup-dr.md) | [D2 questions](../practice/d2-resilient.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Networking services (Route 53, CloudFront, Global Accelerator)](../beginner/services/networking.md) · [Management & monitoring services](../beginner/services/management-monitoring.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Task 2.2 ("highly available and/or fault-tolerant architectures") has the widest service list in the exam guide. This module covers it end to end: resilience vocabulary, DR strategies, the global edge (Route 53, CloudFront, Global Accelerator), deployments and IaC, observability, and operating at scale. Compute HA (ELB and Auto Scaling) is in [module 03](03-compute-containers.md), and database HA (Multi-AZ, Aurora, read replicas) is in [module 05](05-databases.md).
 
 ---

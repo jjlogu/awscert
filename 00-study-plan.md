@@ -1,26 +1,55 @@
-# Study Plan: 5 Weeks (+1 Buffer) at ~15 Hours/Week
-> [Home](README.md) · [Exam strategy](01-exam-strategy.md) · [Labs](labs/README.md) · [Practice](practice/README.md)
+# Study Plan: Week 0 Foundations + 5 Weeks (+1 Buffer) at ~15–17 Hours/Week
+> [Home](README.md) · [Beginner track](beginner/README.md) · [Exam strategy](01-exam-strategy.md) · [Labs](labs/README.md) · [Practice](practice/README.md)
 
-**Total:** about 75 hours over 5 weeks, plus an optional buffer week. Weekdays are ~1.5–2 h blocks; weekends are ~3–4 h.
-**Weekly mix:** about 6 h reading, 5 h labs, 4 h practice/review.
-**Order is deliberate:** weeks 1–3 cover the areas developers usually haven't designed (identity across accounts, VPC networking, hybrid, data protection). Weeks 3–4 cover resilience, data and cost. Week 5 is exam mode.
+**Total:** about 95 hours: **Week 0** (foundations, ~15 h) + Weeks 1–5 (~16 h each, including beginner pre-reads) + an optional buffer week. Weekdays are ~1.5–2 h blocks; weekends are ~3–4 h.
+**Weekly mix (weeks 1–4):** about 2 h beginner pre-reads, 5 h notes, 5 h labs, 4 h practice/review.
+**Order is deliberate:** Week 0 gives you the vocabulary (cloud basics, networking, AWS services in plain English). Weeks 1–3 cover the areas that trip people up most (identity, VPC networking, hybrid, data protection). Week 4 covers resilience, data and cost. Week 5 is exam mode.
 
-> **Shift days freely.** Keep the sequence (notes → lab → questions) and the Sunday review. Don't skip the Sunday review.
+> **New to AWS?** Do Week 0 in full. If you already know the core services, skip it and start at Week 1.
+> **Can't fit ~16 h/week?** Take the beginner pre-reads out of Weeks 1–4 and absorb them in the buffer week. Expect to sit the exam at the end of week 6 rather than week 5.
+
+> **Shift days freely.** Keep the sequence (beginner pre-read → notes → lab → questions) and the Sunday review. Don't skip the Sunday review.
 
 ---
 
 ## Before you start (30 min)
 - [ ] Read [README](README.md) and skim [Exam strategy](01-exam-strategy.md).
 - [ ] Create a study log: a simple spreadsheet or `error-log.md` with columns **Date · Source · Q · Concept · Why I was wrong · Keyword missed · Notes link**.
-- [ ] Decide your target exam date: end of week 5 (aggressive) or end of week 6 (comfortable). You'll **book it in week 4**.
+- [ ] Decide your target exam date: end of week 5 (aggressive) or end of week 6 (comfortable, recommended if you're new to AWS). You'll **book it in week 4**.
+
+---
+
+## Week 0: Foundations (new to AWS)
+
+Goal: build the vocabulary so the notes modules make sense. **Read the ★★★ services fully this week.** You'll read the ★★ and ★ ones as pre-reads in weeks 1–4.
+
+| Day | Time | Do |
+|---|---|---|
+| Mon | 2 h | [Beginner track index](beginner/README.md) · [Cloud & AWS basics](beginner/01-cloud-and-aws-basics.md) §1–7 · [Lab safety](labs/README.md): create your study account, root MFA, budget alert, pick one Region |
+| Tue | 2 h | [Cloud & AWS basics](beginner/01-cloud-and-aws-basics.md) §8–12 · console tour: open IAM, VPC, EC2, S3, CloudWatch and just look (change nothing) |
+| Wed | 2 h | [Networking basics](beginner/02-networking-basics.md) §1–7 (IP, CIDR, routing, NAT, ports, firewalls). Do the CIDR exercises on paper. |
+| Thu | 2 h | [Networking basics](beginner/02-networking-basics.md) §8–15 (DNS, TLS, load balancing, VPN/Direct Connect, CDN, the 2-AZ VPC) → self-check |
+| Fri | 1.5 h | [Kubernetes → AWS map](beginner/03-kubernetes-to-aws.md): connect what you already know from EKS |
+| Sat | 3.5 h | ★★★ services: [IAM](beginner/services/identity-governance.md#aws-iam) · [VPC, ELB, Route 53](beginner/services/networking.md) · [EC2, Auto Scaling, Lambda](beginner/services/compute.md) · [S3, EBS, EFS](beginner/services/storage.md) |
+| Sun | 2 h | ★★★ services: [RDS, Aurora, DynamoDB](beginner/services/databases.md) · [SQS, SNS, EventBridge, API Gateway](beginner/services/integration.md) · [CloudWatch, CloudTrail, CloudFormation](beginner/services/management-monitoring.md) · skim the [glossary](beginner/glossary.md) |
+
+**Gate (Sunday):** without notes, can you…
+- explain the difference between a Region and an Availability Zone, and why you'd use two AZs?
+- say how many addresses a `/24` holds, and what makes a subnet "public"?
+- describe in one sentence each what IAM, VPC, EC2, S3, RDS, SQS and CloudWatch do?
+- name the AWS service behind a Kubernetes `Ingress`, a `PersistentVolume` and a `ServiceAccount` on EKS?
+
+If not, spend an extra day here. Everything later builds on it.
 
 ---
 
 ## Week 1: Identity, multi-account & VPC networking (the biggest developer gap)
 
+**Beginner pre-read (~2 h):** [Identity & governance services](beginner/services/identity-governance.md) (the ★★ and ★ ones) · [Networking services](beginner/services/networking.md) (PrivateLink, Transit Gateway, VPN, Direct Connect)
+
 | Day | Time | Do |
 |---|---|---|
-| Mon | 2 h | **Baseline:** take the free AWS Skill Builder *Official Practice Question Set* cold (~40 min) and record the score. It's not a judgement, just a starting point. Then do [Lab safety](labs/README.md): root MFA, budget alert, pick one Region (~1 h). |
+| Mon | 2 h | **Baseline:** take the free AWS Skill Builder *Official Practice Question Set* cold (~40 min) and record the score. It's not a judgement, just a starting point, and expect it to be low after Week 0. Then re-read the [IAM beginner section](beginner/services/identity-governance.md#aws-iam) (~1 h). |
 | Tue | 2 h | [Notes 01](notes/01-iam-multi-account.md): shared responsibility, IAM building blocks, **policy evaluation logic**, roles & STS |
 | Wed | 2 h | [Notes 01](notes/01-iam-multi-account.md): Identity Center, federation, Directory Service, Organizations/SCPs, Control Tower, RAM, Cognito → self-check |
 | Thu | 2 h | [Lab 01: Account & IAM](labs/lab-01-account-iam.md) |
@@ -36,6 +65,8 @@
 ---
 
 ## Week 2: Compute, containers & storage
+
+**Beginner pre-read (~2 h):** [Compute](beginner/services/compute.md) · [Containers](beginner/services/containers.md) (your home turf: focus on ECS vs EKS and Fargate) · [Storage](beginner/services/storage.md) (S3 Glacier, FSx, Storage Gateway, AWS Backup)
 
 | Day | Time | Do |
 |---|---|---|
@@ -53,6 +84,8 @@
 
 ## Week 3: Databases, decoupling & security
 
+**Beginner pre-read (~2.5 h):** [Databases](beginner/services/databases.md) · [Integration & messaging](beginner/services/integration.md) · [Security services](beginner/services/security.md) (start with the "encryption 101" box)
+
 | Day | Time | Do |
 |---|---|---|
 | Mon | 2 h | [Notes 05](notes/05-databases.md): RDS Multi-AZ vs read replicas, Aurora (Global, Serverless v2), RDS Proxy |
@@ -68,6 +101,8 @@
 ---
 
 ## Week 4: HA/DR, edge, data & cost
+
+**Beginner pre-read (~2.5 h):** [Management & monitoring](beginner/services/management-monitoring.md) · [Analytics](beginner/services/analytics.md) · [Migration & transfer](beginner/services/migration-transfer.md) · [AI & ML](beginner/services/ai-ml.md) (one line per service is enough) · [Cost management](beginner/services/cost-management.md)
 
 | Day | Time | Do |
 |---|---|---|
@@ -104,7 +139,7 @@
 ---
 
 ## 4-week compressed variant (~19 h/week)
-For a hard deadline. Skips or shortens 3 labs; everything else stays.
+For a hard deadline, and only if you already know the core AWS services. **If you're new to AWS, don't compress.** Week 0 plus 5 weeks is already tight. Skips or shortens 3 labs; everything else stays.
 
 | Week | Notes | Labs | Practice |
 |---|---|---|---|

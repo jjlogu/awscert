@@ -6,6 +6,8 @@
 |---|---|---|---|
 | 3.5 (primary), 3.1, 4.1, 4.3 | ~2 hrs | [Lab 07](../labs/lab-07-data-lake.md) | [D3 questions](../practice/d3-high-performing.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Analytics services](../beginner/services/analytics.md) · [Migration & transfer services](../beginner/services/migration-transfer.md) · [AI & ML services](../beginner/services/ai-ml.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Task 3.5 ("high-performing data ingestion and transformation") draws on many analytics services, but the exam asks architect-level questions: *which* ingestion service, *which* query engine, *which* format, *which* transfer tool, and how to make it cheaper. You don't need deep Spark or Kafka knowledge. You need the decision rules below.
 
 ---

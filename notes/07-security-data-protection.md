@@ -6,6 +6,8 @@
 |---|---|---|---|
 | 1.2, 1.3 (primary), 1.1 | ~3 hrs | [Lab 04](../labs/lab-04-s3-cloudfront.md) · [Lab 05](../labs/lab-05-rds-ha.md) | [D1 questions](../practice/d1-secure.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Security services](../beginner/services/security.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Domain 1 is 30% of the exam, the largest share. [Module 01](01-iam-multi-account.md) covered *who* may act (IAM, Organizations, SCPs, IAM Identity Center) and [module 02](02-networking-vpc.md) covered *network* isolation. This module covers the rest: keys and secrets, edge protection, threat detection, audit and compliance, and immutability. Most questions here ask for "the most secure option with the least operational overhead", so the skill is knowing which managed service owns each job.
 
 ---

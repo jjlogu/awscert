@@ -5,6 +5,8 @@
 |---|---|---|---|
 | 3.3, 4.3, 2.1, 2.2, 1.3 | ~4 hrs | [Lab 05](../labs/lab-05-rds-ha.md) | [D3 questions](../practice/d3-high-performing.md) · [D4 questions](../practice/d4-cost-optimized.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Database services](../beginner/services/databases.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Most database questions test three decisions:
 1. **Which database type** fits the access pattern?
 2. **Which HA or replication feature** fits the RPO/RTO or read-scaling need?

@@ -6,7 +6,9 @@
 |---|---|---|---|
 | 2.1, 3.2, 4.2 (plus compute parts of 2.2) | ~4 hrs | [Lab 03](../labs/lab-03-alb-asg.md) | [D2 questions](../practice/d2-resilient.md) · [D3 questions](../practice/d3-high-performing.md) · [D4 questions](../practice/d4-cost-optimized.md) |
 
-You've launched EC2 instances and written Lambda functions. The exam asks a different question: given a workload profile (steady or spiky, stateless or stateful, latency-sensitive, fault-tolerant, licence-bound, on-prem-bound), **which compute shape, purchasing model and scaling mechanism fits best**, and what is the trap in each? This module goes from EC2 internals to Auto Scaling and load balancing, then serverless and containers, and ends with hybrid/edge compute and rightsizing.
+> **New to AWS?** Read these plain-English pages first: [Compute services](../beginner/services/compute.md) · [Container services](../beginner/services/containers.md) · [Kubernetes → AWS map](../beginner/03-kubernetes-to-aws.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
+Once you know what EC2, Lambda and the container services are (see the beginner pages above), the exam asks a harder question: given a workload profile (steady or spiky, stateless or stateful, latency-sensitive, fault-tolerant, licence-bound, on-prem-bound), **which compute shape, purchasing model and scaling mechanism fits best**, and what is the trap in each? This module goes from EC2 internals to Auto Scaling and load balancing, then serverless and containers, and ends with hybrid/edge compute and rightsizing.
 
 ---
 

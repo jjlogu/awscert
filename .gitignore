@@ -1,0 +1,12 @@
+# Never commit private keys or credentials
+*.pem
+*.key
+*.ppk
+.aws/
+credentials
+*.env
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/

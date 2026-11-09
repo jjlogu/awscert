@@ -6,6 +6,8 @@
 |---|---|---|---|
 | 4.1, 4.2, 4.3, 4.4 (primary) | ~2 hrs | Cost sections of every lab ([labs index](../labs/README.md)) | [D4 questions](../practice/d4-cost-optimized.md) |
 
+> **New to AWS?** Read these plain-English pages first: [Cost management services](../beginner/services/cost-management.md). Look up unfamiliar terms in the [glossary](../beginner/glossary.md).
+
 Domain 4 is 20% of the exam, and cost also decides many questions in other domains ("…in the **most cost-effective** way"). This module collects the purchasing, storage, database and network cost levers in one place. Service mechanics are covered in modules [03](03-compute-containers.md), [04](04-storage.md), [05](05-databases.md) and [02](02-networking-vpc.md). Here the focus is the *money*.
 
 ---

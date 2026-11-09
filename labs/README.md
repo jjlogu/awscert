@@ -4,6 +4,8 @@
 
 These eight labs are where the exam's trade-offs stop being abstract. You will build a VPC by hand, break a NACL on purpose, fail over an RDS instance, and watch a poison message land in a DLQ. Do this page once before Lab 01 (about 45 minutes). Most of the money people waste on AWS study comes from skipping it.
 
+> **First time in the AWS console?** That's fine. The labs give exact click-paths and commands. Read [Cloud & AWS basics](../beginner/01-cloud-and-aws-basics.md) first (especially the sections on the console, CLI and billing). Before each lab, skim the beginner page for the services it uses, linked at the top of each lab's notes module. If you only know EKS through `kubectl`, the [Kubernetes → AWS map](../beginner/03-kubernetes-to-aws.md) explains which AWS resources sit behind your cluster.
+
 **The rule:** every lab ends with its cleanup checklist, done the same day. Budgets and anomaly alerts only back you up. They do not replace cleanup.
 
 ---
