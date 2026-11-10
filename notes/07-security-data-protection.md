@@ -318,7 +318,7 @@ Notes:
 - **Organization trail**: created in the management account (or a delegated admin) and logs every member account. Members can't modify or delete it. Send it to a bucket in a dedicated **log-archive account**.
 - **Log file integrity validation**: CloudTrail writes hourly signed **digest files** (SHA-256 hashes, RSA signatures), so you can prove that log files weren't modified or deleted (`aws cloudtrail validate-logs`). Combine it with SSE-KMS, a restrictive bucket policy, MFA Delete or **S3 Object Lock** on the log bucket.
 - **Near-real-time alerting**: CloudTrail → CloudWatch Logs **metric filter** → alarm (e.g., root sign-in, `UnauthorizedOperation`), or EventBridge rules on API calls.
-- **CloudTrail Lake**: a managed event data store you query with **SQL**, with long retention (years). It can also ingest Config items and non-AWS events. Choose it over "trail to S3 + Athena" when the question wants built-in querying with little setup.
+- **CloudTrail Lake**: a managed event data store you query with **SQL**, with long retention (years). It can also ingest Config items and non-AWS events. Choose it over "trail to S3 + Athena" when the question wants built-in querying with little setup. ⚠️ **CloudTrail Lake has been closed to new customers since May 31, 2026.** AWS points new users to CloudWatch, and a trail to S3 queried with Athena remains the classic pattern.
 
 ### 8.2 AWS Config: what does it look like, and is it compliant?
 
@@ -339,7 +339,7 @@ Notes:
 
 ### 8.3 AWS Audit Manager and AWS Artifact
 
-- **Audit Manager** continuously **collects evidence** from your accounts (Config, CloudTrail, Security Hub) and maps it to frameworks such as PCI DSS, HIPAA, SOC 2 and GDPR, so you can produce assessment reports for *your* workload's audit.
+- **Audit Manager** continuously **collects evidence** from your accounts (Config, CloudTrail, Security Hub) and maps it to frameworks such as PCI DSS, HIPAA, SOC 2 and GDPR, so you can produce assessment reports for *your* workload's audit. ⚠️ **Closed to new customers since April 30, 2026** (maintenance mode). AWS points new users to **Config conformance packs**. Older questions may still pick Audit Manager for "automate audit evidence collection".
 - **Artifact** is a self-service portal for **AWS's own** compliance reports (SOC 1/2/3, PCI DSS attestation, ISO certificates) and for **agreements**, such as the **HIPAA Business Associate Addendum (BAA)**, accepted per account or for the whole organization.
 - ⚠️ Trap: Artifact proves *AWS's* side of the shared responsibility model. It doesn't assess your resources.
 

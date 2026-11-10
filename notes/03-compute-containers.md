@@ -458,7 +458,7 @@ On the EC2 launch type there's also the **container instance role** (an instance
 
 ### 10.5 AWS App Runner (brief)
 
-A fully managed service that deploys a **web app or API from source code or a container image** and handles the build, deployment, load balancing, TLS and auto scaling, with a VPC connector for private resources. It's even less configuration than ECS on Fargate, at the cost of control. It isn't in the SAA-C03 in-scope service list, so it rarely appears; check its current availability before designing with it.
+A fully managed service that deploys a **web app or API from source code or a container image** and handles the build, deployment, load balancing, TLS and auto scaling, with a VPC connector for private resources. It's even less configuration than ECS on Fargate, at the cost of control. It isn't in the SAA-C03 in-scope service list, so it rarely appears. **App Runner has been closed to new customers since April 30, 2026** (maintenance mode). AWS points new users to **Amazon ECS Express Mode**, which builds an ECS-on-Fargate service with an ALB and auto scaling from one container image.
 
 ### 10.6 Migrating a monolith to containers
 

@@ -17,9 +17,9 @@ These services let the parts of a system talk to each other **without being glue
 
 ---
 
-## Why decouple? (read this first)
+### Why decouple? (read this first)
 
-### The restaurant analogy
+#### The restaurant analogy
 
 Picture a busy restaurant.
 
@@ -40,7 +40,7 @@ The ticket rail is a **queue**. Now imagine the ticket printer prints **copies**
 
 **The price of decoupling.** Results arrive later (eventual consistency), messages can occasionally be **delivered twice** (so consumers must be **idempotent**: processing the same message twice must do no harm), and tracing a request across services gets harder.
 
-### SNS → SQS fan-out, the pattern you'll see most
+#### SNS → SQS fan-out, the pattern you'll see most
 
 ```mermaid
 flowchart LR
@@ -56,7 +56,7 @@ flowchart LR
 
 The producer publishes **once**. Each consumer gets its **own queue**, so it can be slow, crash or be redeployed without affecting the others. Adding a fourth consumer means adding a fourth subscription; the producer's code doesn't change.
 
-### Queue vs topic vs event bus vs stream
+#### Queue vs topic vs event bus vs stream
 
 | | **Queue**: [Amazon SQS](#amazon-sqs) | **Topic**: [Amazon SNS](#amazon-sns) | **Event bus**: [Amazon EventBridge](#amazon-eventbridge) | **Stream**: [Kinesis Data Streams](analytics.md#amazon-kinesis-data-streams) |
 |---|---|---|---|---|
@@ -86,7 +86,6 @@ The producer publishes **once**. Each consumer gets its **own queue**, so it can
 - **Dead-letter queue (DLQ).** After a message fails a set number of times (`maxReceiveCount`), SQS moves it to a separate queue so one "poison" message doesn't block the rest.
 - **Retention.** Unprocessed messages are kept 4 days by default, configurable from 1 minute to **14 days**.
 - **Message size.** Up to **1 MiB** (older questions say 256 KB). For bigger payloads, store the data in Amazon S3 (Simple Storage Service, AWS's object storage) and send a pointer (the **claim-check** pattern; the Extended Client Library does this for you).
-- **Delay queue.** Postpone delivery of new messages by up to 15 minutes.
 
 **Use it when / don't use it when**
 - ✅ You want to absorb traffic spikes so a database or slow worker isn't overwhelmed.
@@ -165,7 +164,6 @@ The producer publishes **once**. Each consumer gets its **own queue**, so it can
 - **EventBridge Scheduler.** Serverless cron or one-time schedules ("run this Lambda every weekday at 06:00 in Europe/Paris"). It replaces a cron job on an always-on server.
 - **EventBridge Pipes.** Point-to-point: one source (e.g., SQS, Kinesis, DynamoDB Streams) → optional filter and enrichment → one target, without glue code.
 - **Archive and replay.** Store events and replay them later, e.g., after fixing a bug in a consumer.
-- **Schema Registry.** Stores and discovers the structure of events so teams can generate code bindings.
 - **Size and delivery.** Events up to **1 MB**; delivery is at least once with retries, and each target can have its own DLQ.
 
 **Use it when / don't use it when**
@@ -181,10 +179,9 @@ The producer publishes **once**. Each consumer gets its **own queue**, so it can
 - "When an EC2 instance changes state / a resource is created / a security finding appears, automatically do X" → **EventBridge rule**.
 - "Run a job every night with the least operational overhead" → **EventBridge Scheduler** → Lambda or an ECS task (not a cron server on EC2).
 - "Integrate events from a SaaS application" → **partner event bus**.
-- "Collect events from all accounts centrally" → cross-account rules to a central bus.
 - ⚠️ Trap: EventBridge doesn't guarantee ordering. If order matters, look for SQS FIFO or Kinesis.
 
-**Try it** (≈5 min, negligible cost): EventBridge console → **Rules** → Create rule on the default bus → "Rule with an event pattern" → AWS events → service **EC2**, event type **EC2 Instance State-change Notification** → target an SNS topic you created above. You don't need to launch anything; just read the generated JSON pattern, then delete the rule.
+**Try it** (≈5 min, negligible cost): EventBridge console → **Rules** → Create rule on the default bus → "Rule with an event pattern" → AWS events → service **EC2**, event type **EC2 Instance State-change Notification** → target an SNS topic you created above. Read the generated JSON pattern, then delete the rule.
 
 **Go deeper:** [Notes 06: Amazon EventBridge, and choosing between EventBridge, SNS, SQS and Kinesis](../../notes/06-decoupling-serverless.md) · related services: [Amazon SNS](#amazon-sns) · [AWS Step Functions](#aws-step-functions) · [AWS Lambda](compute.md#aws-lambda)
 
@@ -198,14 +195,14 @@ The producer publishes **once**. Each consumer gets its **own queue**, so it can
 |---|---|---|
 | ★★ Medium | A workflow engine like **Argo Workflows**: a declared graph of steps, run and tracked for you. Breaks down: steps are AWS API calls (Lambda, ECS, DynamoDB…), not Pods. Everyday: a recipe card with checkpoints | Standard: per state transition. Express: per request and duration |
 
-**What it is.** AWS Step Functions lets you describe a business process ("validate order → reserve stock → charge card → ship") as a **state machine** in JSON (Amazon States Language) or in a drag-and-drop designer. It calls each step, passes data along, retries failures and records every execution. Without it, you'd hand-code this orchestration and its error handling into a "god" service or chain Lambda functions together, which is fragile and hard to see.
+**What it is.** AWS Step Functions lets you describe a business process ("validate order → reserve stock → charge card → ship") as a **state machine** in JSON (Amazon States Language) or in a drag-and-drop designer. It calls each step, passes data along, retries failures and records every execution. Without it, you'd hand-code this orchestration and its error handling, which is fragile and hard to see.
 
 **Key ideas to know**
 - **State machine and states.** Steps are *Task* (do work), *Choice* (if/else), *Parallel*, *Map* (loop over items), *Wait*, *Succeed* and *Fail*.
 - **Standard vs Express workflows.** *Standard*: up to **1 year**, exactly-once, full visual history; for long business processes. *Express*: up to **5 minutes**, very high volume, cheaper; for short event processing.
 - **Retry and Catch.** Declare retries with backoff per error type, and a fallback step when retries run out (e.g., a compensating "refund payment" step, known as the **saga** pattern).
 - **Wait for callback.** A step can pause (in Standard, for up to a year) until an external system or a human calls back with a token: **human approval**.
-- **Direct service integrations.** Call 200+ AWS services (DynamoDB, SQS, ECS, Glue, Athena…) without a Lambda in between.
+- **Direct service integrations.** Call 200+ AWS services without a Lambda in between.
 
 **Use it when / don't use it when**
 - ✅ A process has several steps, branches, retries or human approval.
@@ -293,7 +290,7 @@ The producer publishes **once**. Each consumer gets its **own queue**, so it can
 - "Protect the API from SQL injection or bad IPs" → **AWS WAF** on a REST API.
 - Spiky writes that overwhelm the backend → **API Gateway → SQS** (direct integration) to buffer them.
 
-**Try it** (≈10 min, negligible cost): API Gateway console → **Create API** → HTTP API → add no integration yet → read the routes and stages screens. Or read-only: open a REST API's **Stage** settings to see the cache and throttling options. Delete anything you create.
+**Try it** (≈10 min, negligible cost): API Gateway console → **Create API** → HTTP API → add no integration yet → read the routes and stages screens. Delete it afterwards.
 
 **Go deeper:** [Notes 06: Amazon API Gateway](../../notes/06-decoupling-serverless.md) · related services: [AWS Lambda](compute.md#aws-lambda) · [Amazon Cognito](identity-governance.md#amazon-cognito) · [AWS WAF](security.md#aws-waf) · [Amazon CloudFront](networking.md#amazon-cloudfront)
 

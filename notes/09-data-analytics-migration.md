@@ -258,8 +258,8 @@ At **full** utilization, 1 Gbps moves about **1 TB in 2.2 hours**. Real links ra
 | **Storage Gateway** | **Hybrid access**: on-premises apps keep file (NFS/SMB), volume (iSCSI) or tape interfaces while the data lives in AWS | An ongoing hybrid bridge, not a one-time mover. See [module 04](04-storage.md). |
 | **AWS DMS** | Database migration and **CDC replication** with minimal downtime, homogeneous or heterogeneous (with schema conversion) | See [module 05](05-databases.md). For huge databases, do the bulk load offline and CDC over the network. |
 | **AWS Application Migration Service (MGN)** | **Lift-and-shift (rehost)** of physical, VMware, Hyper-V and other-cloud servers into EC2 | The agent does continuous block-level replication into a staging area. Launch test instances, then **cut over** with minutes of downtime. It is the recommended rehost tool. |
-| **AWS Application Discovery Service** | **Discovery and planning**: inventory, utilization, **dependencies** | **Agentless collector** (VMware VM inventory and performance) vs **Discovery Agent** (per server: processes and **network connections**, i.e., dependency mapping). Data feeds Migration Hub and can be exported for analysis. |
-| **AWS Migration Hub** | A single place to **track** migration progress across tools (MGN, DMS), plus strategy recommendations | Briefly: it is a tracking and planning console, not a mover. |
+| **AWS Application Discovery Service** | **Discovery and planning**: inventory, utilization, **dependencies** | **Agentless collector** (VMware VM inventory and performance) vs **Discovery Agent** (per server: processes and **network connections**, i.e., dependency mapping). Data feeds Migration Hub and can be exported for analysis. ⚠️ Closed to new customers since Nov 7, 2025 (AWS points to AWS Transform), but still in the exam guide. |
+| **AWS Migration Hub** | A single place to **track** migration progress across tools (MGN, DMS), plus strategy recommendations | Briefly: it is a tracking and planning console, not a mover. ⚠️ Closed to new customers since Nov 2025 (AWS now points to AWS Transform for migration planning). |
 | S3 Transfer Acceleration | Faster long-distance uploads to one bucket via CloudFront edge locations | Use with multipart upload. Pay only when it helps. |
 
 ### 11.3 Which transfer tool?
@@ -301,7 +301,7 @@ At **full** utilization, 1 Gbps moves about **1 TB in 2.2 hours**. Real links ra
 | **Textract** | Extract text, **forms and tables from documents** (OCR+) | "Extract fields from scanned invoices or forms" |
 | **Transcribe** | **Speech-to-text**, with PII redaction and call analytics | "Transcribe call recordings" |
 | **Translate** | **Machine translation** between languages | "Localize product descriptions" |
-| Kendra | ML-powered enterprise search over documents | May appear as a distractor |
+| Kendra | ML-powered enterprise search over documents | May appear as a distractor (closed to new customers since mid-2026) |
 | Personalize | Real-time recommendations | May appear as a distractor |
 | Forecast | Time-series forecasting (closed to new customers; SageMaker AI is the successor path) | May appear as a distractor |
 | Bedrock | Managed foundation models (generative AI) | May appear as a distractor |

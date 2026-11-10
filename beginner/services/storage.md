@@ -28,7 +28,7 @@ Think of a self-storage business:
 
 | | **Object** (S3) | **Block** (EBS, instance store) | **File** (EFS, FSx) |
 |---|---|---|---|
-| How you access it | HTTPS API: PUT/GET/DELETE whole objects | Attached disk; OS formats it (ext4, XFS, NTFS) | Mount over a network protocol: NFS (Linux) or SMB (Windows) |
+| How you access it | HTTPS API: PUT/GET/DELETE whole objects | Attached disk; OS formats it (ext4, XFS, NTFS) | Mount over a network protocol: NFS (Network File System, Linux) or SMB (Server Message Block, Windows) |
 | Who can use it at once | Anyone with permission, from anywhere | One instance (except io1/io2 Multi-Attach) | Thousands of clients |
 | Edit in place? | ❌ Replace the whole object | ✅ | ✅ |
 | Capacity | Unlimited, pay per GB stored | You provision a size and pay for all of it | EFS grows automatically; FSx is provisioned |
@@ -63,7 +63,7 @@ You pay less per GB when you promise to read data less often. Every class has th
 |---|---|---|---|---|
 | **S3 Standard** | Hot data read often | ≥3 AZs | None | Milliseconds |
 | **S3 Intelligent-Tiering** | You don't know the access pattern; S3 moves objects between tiers for a small monitoring fee | ≥3 AZs | None | Milliseconds (optional archive tiers are slower) |
-| **S3 Standard-IA** (Infrequent Access) | Read about monthly, must be instant (backups, DR copies) | ≥3 AZs | 30 days | Milliseconds, per-GB retrieval fee |
+| **S3 Standard-IA** (Infrequent Access) | Read about monthly, must be instant (backups, DR (disaster recovery) copies) | ≥3 AZs | 30 days | Milliseconds, per-GB retrieval fee |
 | **S3 One Zone-IA** | Same, but data you can re-create | **1 AZ** | 30 days | Milliseconds, per-GB retrieval fee |
 | **S3 Glacier Instant Retrieval** | Archive read about quarterly, still instant | ≥3 AZs | 90 days | Milliseconds |
 | **S3 Glacier Flexible Retrieval** | Archive; minutes to hours is fine | ≥3 AZs | 90 days | Minutes to hours (restore first) |
@@ -82,8 +82,8 @@ Turn on **versioning** and S3 keeps every version of an object. Overwrites creat
 
 Access is checked in layers, a bit like Kubernetes RBAC plus a NetworkPolicy:
 - **Block Public Access**: an on-by-default safety switch at account and bucket level that overrides any policy trying to make data public.
-- **IAM policies** (on users and roles): what *your* identities may do in S3.
-- **Bucket policies** (on the bucket, in JSON): who may access *this bucket*, including other AWS accounts, a specific VPC endpoint, or only over HTTPS.
+- **IAM (Identity and Access Management) policies** (on users and roles): what *your* identities may do in S3.
+- **Bucket policies** (on the bucket, in JSON): who may access *this bucket*, including other AWS accounts, a specific VPC (Virtual Private Cloud) endpoint, or only over HTTPS.
 - ACLs are legacy and **disabled by default** on new buckets. **Presigned URLs** give someone temporary access to one object without AWS credentials.
 
 ### Encryption
@@ -175,7 +175,7 @@ S3 can announce "object created/deleted/restored" to [AWS Lambda](compute.md#aws
 |---|---|---|
 | ★★★ High | The disk behind a **ReadWriteOnce** PersistentVolume (via the EBS CSI driver). Everyday: an external USB drive you can unplug and plug into another PC in the same room | Per GB-month provisioned (+ provisioned IOPS/throughput for some types) + snapshot storage |
 
-**What it is.** EBS volumes are the hard drives of EC2: boot volumes and data disks for databases and apps. They're network-attached, so they survive an instance stopping and can be detached and re-attached. Data is replicated within its AZ automatically.
+**What it is.** EBS volumes are the hard drives of EC2: boot volumes and data disks for databases and apps. They're network-attached, so they survive an instance stopping and can be detached and re-attached. Data is replicated within its AZ automatically. Performance is measured in **IOPS** (input/output operations per second, good for small random reads and writes) and **throughput** (MiB/s, good for big sequential reads).
 
 **Volume types**
 
@@ -281,7 +281,7 @@ S3 can announce "object created/deleted/restored" to [AWS Lambda](compute.md#aws
 | Flavour | Speaks | Pick it when the question says… |
 |---|---|---|
 | **FSx for Windows File Server** | SMB, Active Directory, NTFS permissions, DFS | "Windows", "SMB", "Active Directory", lift-and-shift of a Windows file share; Multi-AZ available |
-| **FSx for Lustre** | Lustre (Linux, parallel) | "HPC", "ML training", "sub-millisecond, hundreds of GB/s"; can **link to an S3 bucket** and load objects as files. Scratch (cheap, temporary) or Persistent |
+| **FSx for Lustre** | Lustre (Linux, parallel) | "HPC" (high-performance computing), "ML training", "sub-millisecond, hundreds of GB/s"; can **link to an S3 bucket** and load objects as files. Scratch (cheap, temporary) or Persistent |
 | **FSx for NetApp ONTAP** | NFS, SMB **and** iSCSI | "Migrate NetApp", "multi-protocol", SnapMirror, data deduplication |
 | **FSx for OpenZFS** | NFS | "Migrate ZFS/Linux NFS servers", snapshots and instant clones |
 

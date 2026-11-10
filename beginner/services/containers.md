@@ -1,7 +1,7 @@
 # Containers: AWS services explained for beginners
 > [Home](../../README.md) · [Beginner track](../README.md) · [All services A–Z](README.md) · Deep dive: [Notes 03](../../notes/03-compute-containers.md)
 
-This is the category you already half-know. You build a container image, store it in a registry, and an orchestrator decides where it runs. On AWS the registry is **Amazon ECR**, and you choose between two orchestrators: **Amazon EKS** (managed Kubernetes, which you've used through `kubectl`) and **Amazon ECS** (AWS's own, simpler orchestrator). Both can run containers on EC2 instances you manage, or on **AWS Fargate**, where there are no servers for you to see at all.
+This is the category you already half-know. You build a container image, store it in a registry, and an orchestrator decides where it runs. On AWS the registry is **Amazon ECR**, and you choose between two orchestrators: **Amazon EKS** (managed Kubernetes, which you've used through `kubectl`) and **Amazon ECS** (AWS's own, simpler orchestrator). Both can run containers on EC2 (Elastic Compute Cloud) virtual machines you manage, or on **AWS Fargate**, where there are no servers for you to see at all.
 
 ```mermaid
 flowchart LR
@@ -48,7 +48,7 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  K["kubectl / Helm / CI"] -->|"HTTPS, authenticated with IAM"| API
+  K["kubectl / Helm / CI"]
   subgraph CP["Control plane (AWS-managed account)"]
     API["kube-apiserver"]
     ETCD[("etcd")]
@@ -59,6 +59,7 @@ flowchart TB
     N2["Node in AZ b (EC2)"]
     FP["Pod on Fargate"]
   end
+  K -->|"HTTPS, authenticated with IAM"| API
   API -->|"ENIs placed in your subnets"| N1
   API --> N2
   API --> FP
@@ -112,7 +113,7 @@ Without the controller, the old in-tree cloud provider creates a legacy Classic 
 | Works on Fargate | ✅ | ❌ (EC2 Linux nodes only) |
 
 **Humans/CI → the Kubernetes API.** EKS authenticates `kubectl` with IAM. To authorize who can do what:
-- **Access entries** (current, recommended): grant an IAM role cluster or namespace access through the EKS API, console or CloudFormation, using AWS-provided access policies or your own RBAC groups. Auto Mode requires them.
+- **Access entries** (current, recommended): grant an IAM role cluster or namespace access through the EKS API, console or CloudFormation, using AWS-provided access policies or your own RBAC (role-based access control) groups. Auto Mode requires them.
 - **`aws-auth` ConfigMap** (legacy): a YAML mapping inside `kube-system`. One bad edit could lock everyone out. Migrate to access entries.
 
 ### Add-ons
@@ -227,7 +228,7 @@ Without the controller, the old in-tree cloud provider creates a legacy Classic 
 
 ## Amazon ECR
 
-> **In one line:** Amazon Elastic Container Registry (ECR) is a private, managed Docker/OCI image registry integrated with IAM.
+> **In one line:** Amazon Elastic Container Registry (ECR) is a private, managed Docker/OCI (Open Container Initiative) image registry integrated with IAM.
 
 | Exam importance | Kubernetes / everyday analogy | Pricing model (rough) |
 |---|---|---|
@@ -276,7 +277,7 @@ Without the controller, the old in-tree cloud provider creates a legacy Classic 
 |---|---|---|
 | ★ Low | Joining your own machines as worker nodes to a cloud-hosted control plane | Per registered on-premises instance per hour |
 
-**What it is.** You install the SSM Agent and ECS agent on your servers, register them, and they show up as `EXTERNAL` capacity in an ECS cluster. You manage workloads with the same ECS APIs and console you'd use in the cloud, but the servers need a connection back to the Region.
+**What it is.** You install the SSM Agent (from AWS Systems Manager) and the ECS agent on your servers, register them, and they show up as `EXTERNAL` capacity in an ECS cluster. You manage workloads with the same ECS APIs and console you'd use in the cloud, but the servers need a connection back to the Region.
 
 **Exam hot spots**
 - "Run containers on existing on-premises hardware, managed centrally from AWS, minimal effort" → **ECS Anywhere**.
@@ -310,7 +311,7 @@ Without the controller, the old in-tree cloud provider creates a legacy Classic 
 |---|---|---|
 | ★ Low | A Kubernetes "distro", like choosing a Linux distribution; just the packaged bits, no management | Free (open source) |
 
-**What it is.** EKS Distro (EKS-D) gives you the exact Kubernetes binaries and dependencies EKS uses. Everything else (installation, upgrades, HA, support) is on you.
+**What it is.** EKS Distro (EKS-D) gives you the exact Kubernetes binaries and dependencies EKS uses. Everything else (installation, upgrades, high availability, support) is on you.
 
 **Exam hot spots**
 - "Do-it-yourself Kubernetes anywhere, matching EKS versions" → EKS Distro. "Managed tooling on-premises" → EKS Anywhere instead.

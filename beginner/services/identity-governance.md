@@ -51,7 +51,7 @@ An **IAM group** is a bag of users that share policies, for example `Developers`
 ### Roles
 
 An **IAM role** is an identity with permissions but **no password and no permanent keys**. Someone or something *assumes* the role and receives temporary credentials from [AWS STS](#aws-sts) that expire after a set time (one hour by default). Roles are the right answer for:
-- code on AWS: an EC2 **instance profile**, a Lambda **execution role**, an ECS task role, or an EKS pod through IRSA (IAM Roles for Service Accounts) or EKS Pod Identity ([Amazon EKS](containers.md#amazon-eks));
+- code on AWS: an EC2 **instance profile**, a Lambda **execution role**, an ECS (Elastic Container Service) task role, or an EKS pod through IRSA (IAM Roles for Service Accounts) or EKS Pod Identity ([Amazon EKS](containers.md#amazon-eks));
 - people and systems from **another account** (cross-account access);
 - people signing in through a corporate login (federation).
 
@@ -138,7 +138,7 @@ The **root user** is the email address that created the account. It can do every
 
 ### Access keys vs roles
 
-**Access keys** (an access key ID plus a secret) are permanent until someone rotates them, so they leak into Git repos, AMIs and laptops. **Roles** hand out credentials that expire on their own. Exam rule: when an answer says "store access keys on the instance / in the code / in environment variables", it's wrong. The right answer is a role.
+**Access keys** (an access key ID plus a secret) are permanent until someone rotates them, so they leak into Git repos, AMIs (Amazon Machine Images) and laptops. **Roles** hand out credentials that expire on their own. Exam rule: when an answer says "store access keys on the instance / in the code / in environment variables", it's wrong. The right answer is a role.
 
 **Use it when / don't use it when**
 - ✅ Always. Every AWS design uses IAM roles and policies.
@@ -325,7 +325,7 @@ The **root user** is the email address that created the account. It can do every
 **What it is.** Many companies keep employee accounts in **Microsoft Active Directory (AD)**, and many Windows apps (SQL Server, file shares, .NET apps) expect an AD to exist. Directory Service lets AWS workloads use AD without you building and patching domain controllers on EC2.
 
 **Key ideas to know**
-- **AWS Managed Microsoft AD**: real AD domain controllers run by AWS across two AZs (Availability Zones). Supports **trusts** with your on-prem AD, MFA, and AD-aware services such as Amazon RDS for SQL Server and Amazon FSx for Windows File Server.
+- **AWS Managed Microsoft AD**: real AD domain controllers run by AWS across two AZs (Availability Zones). Supports **trusts** with your on-prem AD, MFA, and AD-aware services such as Amazon RDS (Relational Database Service) for SQL Server and Amazon FSx for Windows File Server.
 - **AD Connector**: a proxy that forwards login requests to your **on-prem AD**. It stores no user data in AWS, and it needs a VPN (virtual private network) or Direct Connect link. If that link is down, logins fail.
 - **Simple AD**: a small, cheap AD-compatible directory (Samba-based) with no trusts and no MFA. ⚠️ It entered maintenance mode and has been closed to new customers since July 30, 2026, but it may still appear in exam questions as the "low-cost basic directory" answer.
 - **Trust**: a link that lets users of one AD domain be recognized by another.

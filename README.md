@@ -32,6 +32,25 @@ AWS says exam-guide updates reach the live exam about **one month** after public
 - Amazon QuickSight now appears as **Amazon Quick**. It is the same BI/dashboard service; older practice material still says "QuickSight".
 - The exam uses **official short service names** (e.g., "Amazon SNS", not "Amazon Simple Notification Service"). The in-exam **Help** feature lists the full names. This guide uses short names throughout.
 
+### Services closed to new customers that can still appear on the exam
+AWS has put several services into maintenance mode (existing users only). Exam questions lag behind these changes, so **learn the decision each service represents**. Just know you may not be able to try it in a new account.
+
+| Service | Closed to new customers since | Exam still tests | Use today instead |
+|---|---|---|---|
+| AWS Snow Family (Snowball Edge) | Nov 7, 2025 | Offline bulk transfer when the network is too slow | DataSync (over Direct Connect), AWS Data Transfer Terminal |
+| AWS Application Discovery Service | Nov 7, 2025 | Discover servers and dependencies before migrating | AWS Transform |
+| AWS Migration Hub | Nov 7, 2025 | Track a migration across tools | AWS Transform |
+| AWS Proton | End of support Oct 7, 2026 | Platform templates for self-service deployment | Service Catalog, CloudFormation/CDK |
+| AWS Directory Service: Simple AD | mid-2026 | Low-cost basic directory | AWS Managed Microsoft AD |
+| AWS Audit Manager | Apr 30, 2026 | Automated audit evidence collection | AWS Config conformance packs |
+| AWS CloudTrail Lake | May 31, 2026 | SQL queries over CloudTrail events | CloudWatch (AWS's recommendation), or a trail to S3 + Athena |
+| AWS App Runner (not in scope) | Apr 30, 2026 | — | Amazon ECS Express Mode (ECS on Fargate) |
+| FSx File Gateway | Oct 2024 | On-prem cache for FSx for Windows | FSx for Windows File Server directly |
+| S3 Select / Glacier Select | Jul 2024 | Query inside one object | Athena |
+| Amazon Timestream for LiveAnalytics, Kendra, Forecast | 2024–2026 | Distractors | Timestream for InfluxDB; Bedrock knowledge bases; SageMaker Canvas |
+
+Source: [AWS services in maintenance](https://docs.aws.amazon.com/general/latest/gr/maintenance_services.html), checked 2026-11-09.
+
 ---
 
 ## How to use this guide

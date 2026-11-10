@@ -328,7 +328,7 @@ The recommended way to give **people** access to **many accounts** (successor to
 | Size | Standard and Enterprise editions | Small and Large | Small (approx. 500 users) and Large (approx. 5,000 users) |
 | Choose when | You need an actual AD in AWS, or a trust, or AD-dependent apps | Identities must stay on-prem and you just need AWS services to authenticate against them | Cheap, small, simple Linux/Windows domain needs |
 
-Exam cues: "users must keep using existing on-prem AD credentials, no directory data in the cloud" → **AD Connector**. "Migrate AD-dependent .NET/SQL Server apps; AD must survive a WAN outage" → **Managed Microsoft AD** (with a trust to on-prem). "Low-cost basic directory" → **Simple AD**.
+Exam cues: "users must keep using existing on-prem AD credentials, no directory data in the cloud" → **AD Connector**. "Migrate AD-dependent .NET/SQL Server apps; AD must survive a WAN outage" → **Managed Microsoft AD** (with a trust to on-prem). "Low-cost basic directory" → **Simple AD**. That is the exam answer, but ⚠️ Simple AD has been **closed to new customers since mid-2026** (maintenance mode), so real new designs use Managed Microsoft AD.
 
 ---
 

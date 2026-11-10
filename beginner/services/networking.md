@@ -37,11 +37,11 @@ A useful way to sort the ten services is by *which boundary they cross*:
 
 ### What a VPC is
 
-A **VPC (Virtual Private Cloud)** is your own private slice of the AWS network in one **Region** (a geographic area such as `eu-west-1`). It spans every **Availability Zone (AZ)** in that Region; an AZ is one or more separate data centers with independent power and networking. When you create a VPC you pick an IP range in **CIDR** (Classless Inter-Domain Routing) notation, such as `10.0.0.0/16` (about 65,000 addresses). Nobody else's traffic can enter unless you build a gate.
+A **VPC (Virtual Private Cloud)** is your own private slice of the AWS network in one **Region** (a geographic area such as `eu-west-1`). It spans every **Availability Zone (AZ)** in that Region; an AZ is one or more separate data centers with independent power and networking. You give the VPC an IP range in **CIDR** (Classless Inter-Domain Routing) notation, such as `10.0.0.0/16` (about 65,000 addresses).
 
-Think of a gated office park. The perimeter fence is the VPC. Inside are buildings (subnets), roads with signposts (route tables), a main gate to the public road (the internet gateway), and security staff checking badges at each building and at each office door (network ACLs and security groups).
+In the gated-office-park picture, the fence is the VPC, the buildings are subnets, the signposts are route tables, the main gate is the internet gateway, and the guards at building entrances and office doors are network ACLs and security groups.
 
-You have already used one without seeing it. Your EKS (Amazon Elastic Kubernetes Service) cluster's worker nodes are servers in a VPC, and with the default networking plugin (the VPC CNI) **every pod gets a real IP address from a VPC subnet**. That's why EKS clusters run out of IPs when subnets are too small.
+You've already used one. Your EKS (Amazon Elastic Kubernetes Service) worker nodes live in a VPC, and with the default VPC CNI plugin **every pod gets a real IP address from a VPC subnet**, which is why small subnets run out of IPs.
 
 ### Subnets
 
@@ -52,11 +52,11 @@ A **subnet** is a smaller IP range carved out of the VPC's range, and it lives i
 
 ### Route tables
 
-A **route table** is the list of signposts a subnet follows: "traffic for destination X goes to target Y". Every route table has a built-in `local` route so all subnets in the VPC can reach each other. Each subnet is associated with one route table; one route table can serve many subnets. When several routes match, the **most specific** one (the longest prefix, e.g. `/24` beats `/16`) wins.
+A **route table** is the list of signposts a subnet follows: "traffic for destination X goes to target Y". A built-in `local` route lets all subnets in the VPC reach each other. Each subnet uses one route table; one table can serve many subnets. When several routes match, the **most specific** one wins (`/24` beats `/16`).
 
 ### Internet gateway
 
-An **internet gateway (IGW)** is the main gate between the VPC and the internet. You attach one per VPC. AWS runs it as a redundant, horizontally scaled component, so it's not a bottleneck or a single point of failure. An instance needs both a route to the IGW **and** a public IP address to be reachable from the internet.
+An **internet gateway (IGW)** is the main gate between the VPC and the internet, one per VPC. AWS makes it redundant and scalable, so it's never the bottleneck. An instance needs both a route to the IGW **and** a public IP address to be reachable from the internet.
 
 ### NAT gateway
 
@@ -75,7 +75,7 @@ A **security group (SG)** is a virtual firewall attached to an **elastic network
 - **Allow rules only:** there is no "deny". Anything not allowed is blocked.
 - Rules can name **another security group** as the source ("allow port 5432 from the app tier's SG"), so new instances are covered automatically.
 
-**Kubernetes bridge:** this is the closest thing to a NetworkPolicy. Referencing a security group is like a `podSelector` in a policy. Where it breaks: NetworkPolicies select pods by label and can apply to whole namespaces, while SGs attach to network interfaces. EKS can also apply SGs to individual pods ("security groups for pods").
+**Kubernetes bridge:** the closest thing to a NetworkPolicy; referencing an SG is like a `podSelector`. Where it breaks: NetworkPolicies select pods by label, while SGs attach to network interfaces (EKS can attach them to pods with "security groups for pods").
 
 ### Network ACLs
 
@@ -101,11 +101,11 @@ A **VPC endpoint** lets private resources reach AWS services such as S3 without 
 
 ### VPC Flow Logs
 
-**VPC Flow Logs** record metadata about IP traffic (source, destination, ports, bytes, ACCEPT or REJECT) for a VPC, subnet or ENI, and send it to CloudWatch Logs, S3 or Amazon Data Firehose. They don't capture packet contents. They are the first place to look when "the connection just times out".
+**VPC Flow Logs** record traffic metadata (source, destination, ports, bytes, ACCEPT or REJECT) for a VPC, subnet or ENI, and send it to CloudWatch Logs, S3 or Amazon Data Firehose. No packet contents. They're the first place to look when "the connection just times out".
 
 ### Default VPC
 
-Every Region in a new account comes with a **default VPC**: a `/16` with a public subnet in each AZ and an internet gateway, so you can launch an instance instantly. It's handy for experiments, but production designs use a custom VPC with private subnets.
+Every Region in your account comes with a **default VPC**: a public subnet in each AZ plus an internet gateway, so you can launch an instance instantly. Fine for experiments; production uses a custom VPC with private subnets.
 
 ### Putting it together: a 2-AZ VPC
 
@@ -141,9 +141,8 @@ flowchart TB
 ```
 
 **Use it when / don't use it when**
-- ✅ Always: almost everything that has an IP address runs in a VPC.
-- ✅ Custom VPC with public and private subnets in at least two AZs for anything production.
-- ❌ Don't put databases or app servers in public subnets "to make it work" → fix routing with a NAT gateway or endpoint instead.
+- ✅ Production: a custom VPC with public and private subnets in at least two AZs.
+- ❌ Putting databases or app servers in public subnets "to make it work" → fix routing with a NAT gateway or endpoint instead.
 
 **Exam hot spots**
 - "Private instances need to download patches" → **NAT gateway in a public subnet**; "highly available" → **one per AZ**.
@@ -166,14 +165,14 @@ flowchart TB
 |---|---|---|
 | ★★★ High | On EKS, the AWS Load Balancer Controller turns an **Ingress into an ALB** and a **Service of type LoadBalancer into an NLB**. Everyday: the host at a busy restaurant seating guests at free tables. | Per hour + per "capacity unit" (a blend of connections, requests and bytes) |
 
-**What it is.** A load balancer gives clients one stable entry point and forwards each request or connection to a healthy backend. AWS runs the load balancer nodes for you across the AZs you choose, scales them automatically and replaces failed ones. Without it you'd run and patch your own HAProxy or NGINX fleet and solve its high availability yourself. There are several types, and picking the right one is a favourite exam question.
+**What it is.** A load balancer gives clients one stable entry point and forwards each request or connection to a healthy backend. AWS runs, scales and repairs the load balancer nodes across the AZs you choose; otherwise you'd run your own highly available HAProxy or NGINX fleet. Picking the right type is a favourite exam question.
 
 | | Application Load Balancer (ALB) | Network Load Balancer (NLB) | Gateway Load Balancer (GWLB) |
 |---|---|---|---|
 | Works at | Layer 7: HTTP, HTTPS, gRPC, WebSockets | Layer 4: TCP, UDP, TLS | Layer 3: IP packets |
 | Routes by | URL path, hostname, headers, query string | Port and protocol | Sends all traffic through an appliance fleet |
 | Static IP | ❌ (DNS name only) | ✅ one per AZ (can be your Elastic IPs) | n/a |
-| Special powers | WAF integration, user login via Cognito/OIDC, Lambda targets | Extreme throughput, very low latency, client IP preserved, backs PrivateLink | Inserts third-party firewalls transparently |
+| Special powers | WAF integration, user login via Cognito or any OIDC (OpenID Connect) provider, Lambda targets | Extreme throughput, very low latency, client IP preserved, backs PrivateLink | Inserts third-party firewalls transparently |
 | K8s equivalent | Ingress | Service `type: LoadBalancer` | None |
 
 The **Classic Load Balancer (CLB)** is the legacy original. If a question mentions it, the answer is usually "migrate to ALB or NLB".
@@ -185,7 +184,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 - **Internet-facing vs internal:** internet-facing load balancers live in public subnets; internal ones have only private IPs for tier-to-tier traffic.
 - **TLS termination:** the ALB or NLB can hold the certificate (from [ACM](security.md#aws-certificate-manager-acm)), decrypt HTTPS and forward to targets.
 - **Cross-zone load balancing:** spreads traffic evenly across targets in all AZs; on by default for ALB, off by default for NLB.
-- **Sticky sessions:** pin a client to one target. It works, but storing session state in ElastiCache or DynamoDB is the better design.
+- **Sticky sessions:** pin a client to one target. Storing session state in ElastiCache or DynamoDB is the better design.
 
 **Use it when / don't use it when**
 - ✅ Any web or API tier with more than one server, or any Auto Scaling group.
@@ -213,15 +212,15 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 |---|---|---|
 | ★★★ High | CoreDNS turns Service names into IPs inside a cluster; Route 53 does that for the internet (and, with private hosted zones, inside VPCs). If you've used `external-dns` on EKS, it was writing Route 53 records. Everyday: a phone directory that can also say "that branch is closed, call this one". | Per hosted zone per month + per million queries; health checks per month; domain registration per year |
 
-**What it is.** DNS (Domain Name System) turns names like `shop.example.com` into IP addresses. Route 53 hosts your DNS records on a global network of name servers and is designed for very high availability (AWS offers a 100% availability SLA for it). On top of plain DNS, it can run **health checks** and give different answers depending on which endpoints are healthy or where the user is. That makes it a key building block for multi-Region and disaster-recovery designs.
+**What it is.** DNS (Domain Name System) turns names like `shop.example.com` into IP addresses. Route 53 hosts your records on a global network of name servers (backed by a 100% availability SLA, or service level agreement). On top of plain DNS, it runs **health checks** and can answer differently depending on which endpoints are healthy or where the user is, which makes it a building block for multi-Region and disaster-recovery designs.
 
 **Key ideas to know**
 - **Hosted zone:** the container for one domain's records. **Public** zones answer the internet; **private** zones answer only inside the VPCs you associate.
 - **Record types:** **A** (name → IPv4), **AAAA** (name → IPv6), **CNAME** (name → another name), **MX** (mail), **TXT** (verification text), **NS** (which name servers own the zone).
 - **Alias record:** a Route 53 extension that points a name at an AWS resource (ALB, CloudFront, S3 website, API Gateway, Global Accelerator). Unlike a CNAME, it works at the **zone apex** (`example.com` itself) and queries to AWS targets are free.
 - **TTL (time to live):** how long resolvers cache an answer. Low TTLs make failover faster; some clients still cache longer.
-- **Health checks:** Route 53 probes an endpoint (HTTP, HTTPS or TCP) from locations worldwide, or follows a CloudWatch alarm for private resources it can't reach.
-- **Route 53 Resolver:** the DNS server built into every VPC. Its **inbound and outbound endpoints** let on-premises DNS and VPC DNS resolve each other's names.
+- **Health checks:** probes of an endpoint (HTTP, HTTPS or TCP) from locations worldwide, or a CloudWatch alarm for private resources.
+- **Route 53 Resolver:** the DNS server built into every VPC. Its **inbound and outbound endpoints** connect VPC DNS and on-premises DNS.
 
 **Routing policies**
 
@@ -248,7 +247,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 - "Send 10% of traffic to the new version" → **weighted**.
 - Hybrid DNS between VPCs and on-premises → **Resolver inbound/outbound endpoints**.
 
-**Try it:** Read-only: open the **Route 53 console → Hosted zones → Create hosted zone** and look at the public vs private choice and the "Create record" routing policy list. A hosted zone has a small monthly fee, so don't create one unless you'll use it.
+**Try it:** Read-only: open **Route 53 → Hosted zones → Create hosted zone** and look at the public vs private choice. Hosted zones have a small monthly fee, so don't create one you won't use.
 
 **Go deeper:** [Notes 08: Amazon Route 53](../../notes/08-ha-dr-edge-ops.md#3-amazon-route-53) · related services: [Amazon CloudFront](#amazon-cloudfront), [Elastic Load Balancing (ELB)](#elastic-load-balancing-elb)
 
@@ -270,7 +269,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 - **TTL and cache key:** how long objects stay cached and which parts of a request (headers, cookies, query strings) make a cached object unique.
 - **Origin Access Control (OAC):** lets CloudFront read a **private** S3 bucket so users can't bypass CloudFront. (OAI is the older method.)
 - **Signed URLs / signed cookies:** time-limited access to private content, such as paid videos.
-- **Edge security:** HTTPS with an [ACM](security.md#aws-certificate-manager-acm) certificate (it must be in `us-east-1`), [AWS WAF](security.md#aws-waf) rules, geo restriction, and built-in [Shield Standard](security.md#aws-shield) DDoS protection.
+- **Edge security:** HTTPS with an [ACM](security.md#aws-certificate-manager-acm) certificate (it must be in `us-east-1`), [AWS WAF](security.md#aws-waf) rules, geo restriction, and built-in [Shield Standard](security.md#aws-shield) protection against DDoS (distributed denial-of-service) attacks.
 - **Edge code:** **CloudFront Functions** (tiny, very fast header/URL tweaks) and **Lambda@Edge** (heavier logic).
 
 **Use it when / don't use it when**
@@ -329,7 +328,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 |---|---|---|
 | ★★ Medium | A service hatch in the wall between two offices: you can pass requests to one counter, but nobody can wander through the other office. Somewhat like exposing a single Service to another cluster rather than merging the cluster networks. | Consumer pays per interface endpoint per AZ per hour + per GB |
 
-**What it is.** PrivateLink is the technology behind **interface VPC endpoints**. A provider puts a service behind a **Network Load Balancer** and publishes it as an **endpoint service**. Each consumer creates an interface endpoint, which appears as a network interface with a private IP in the consumer's own subnet. Traffic flows only from consumer to provider, stays on the AWS network, and works even when the two VPCs use **overlapping IP ranges**.
+**What it is.** PrivateLink is the technology behind **interface VPC endpoints**. A provider puts a service behind a **Network Load Balancer** and publishes it as an **endpoint service**; each consumer creates an interface endpoint, a network interface with a private IP in its own subnet. Traffic flows only consumer → provider, stays on the AWS network, and works even with **overlapping IP ranges**.
 
 **Key ideas to know**
 - **Interface endpoint:** the consumer side, an ENI with a private IP and its own security group.
@@ -339,7 +338,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 
 **Use it when / don't use it when**
 - ✅ Private subnets with no NAT gateway need to call AWS services such as Secrets Manager, ECR or SSM.
-- ✅ A SaaS provider exposes an API to hundreds of customer VPCs.
+- ✅ A SaaS (software as a service) provider exposes an API to hundreds of customer VPCs.
 - ❌ Full two-way connectivity between whole networks → [VPC peering](#vpc-peering) or [Transit Gateway](#aws-transit-gateway).
 - ❌ S3 or DynamoDB from inside the VPC, with cost as the priority → the free **gateway endpoint**.
 
@@ -366,7 +365,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 - **Attachment:** a connection from the TGW to a VPC, VPN, Direct Connect gateway or another TGW (peering across Regions).
 - **TGW route tables:** let you segment traffic, e.g., dev and prod VPCs can both reach shared services but not each other.
 - **Shared hybrid link:** one VPN or Direct Connect into the TGW serves every attached VPC.
-- **ECMP over VPN:** several VPN tunnels can be combined for more bandwidth.
+- **ECMP (equal-cost multi-path) over VPN:** several VPN tunnels can be combined for more bandwidth.
 
 **Use it when / don't use it when**
 - ✅ Many VPCs (dozens to thousands), especially with on-premises connectivity.
@@ -443,7 +442,7 @@ The **Classic Load Balancer (CLB)** is the legacy original. If a question mentio
 - **Dedicated connection:** your own port at 1, 10, 100 or 400 Gbps. **Hosted connection:** provided through a partner, from 50 Mbps upward.
 - **Virtual interfaces (VIFs):** logical channels on the link. A **private VIF** reaches your VPCs; a **public VIF** reaches AWS public services such as S3; a **transit VIF** reaches Transit Gateways.
 - **Direct Connect gateway:** a global object that lets one connection reach VPCs in many Regions.
-- **Encryption options:** **MACsec** on supported dedicated ports, or an **IPsec VPN over DX**.
+- **Encryption options:** **MACsec** (link-layer encryption) on supported dedicated ports, or an **IPsec VPN over DX**.
 - **Resilience:** one link is a single point of failure. Use two connections at two DX locations (high resiliency), four for maximum resiliency, or DX + Site-to-Site VPN as a cheaper backup.
 
 **Use it when / don't use it when**

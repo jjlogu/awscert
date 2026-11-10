@@ -2,9 +2,7 @@
 
 > [Home](../README.md) · [Beginner track](README.md) · Next: [Networking basics](02-networking-basics.md)
 
-You have already used AWS more than you might think. Every `kubectl get pods` you ran against EKS went through AWS credentials, an AWS-managed control plane and AWS-run virtual machines. This page fills in what sits underneath: what "the cloud" is, how an AWS account works, how you talk to AWS, where AWS physically runs, who is responsible for what, how the bill works, and how the pieces fit into a normal web application.
-
-Budget about **3–4 hours** for this page, including the self-check at the end. Nothing here needs an AWS account, but if you have one, the "try it" hints will make it stick faster.
+You have already used AWS more than you might think. Every `kubectl get pods` you ran against EKS went through AWS credentials, an AWS-managed control plane and AWS-run virtual machines. This page fills in what sits underneath: what "the cloud" is, how accounts work, how you talk to AWS, where it physically runs, who is responsible for what, how billing works, and how the pieces fit into a normal web application. Budget about **3 hours**, including the self-check.
 
 **On this page**
 1. [What "the cloud" actually is](#1-what-the-cloud-actually-is)
@@ -26,14 +24,9 @@ Budget about **3–4 hours** for this page, including the self-check at the end.
 
 **In plain words:** the cloud is renting someone else's data centers, by the second, through an API.
 
-Unpack that sentence piece by piece:
-
-- **Someone else's data centers.** AWS owns buildings full of servers, disks, network switches, power and cooling. You never see them or touch them.
-- **Renting.** You don't buy hardware. You pay for what you use while you use it, and stop paying when you delete it.
-- **By the second.** Many resources (for example, Linux virtual machines) are billed per second after a short minimum. Others are billed per hour, per GB stored per month, or per request. The point is that the billing unit is small, so short experiments are cheap.
-- **Through an API.** Everything you do is an HTTPS call to an AWS endpoint: "create a virtual machine", "store this file", "delete this database". The web console, the command line and Terraform are all just different ways of making those API calls.
-
-That last point is the one that matters most to you as a developer. A data center you control with API calls behaves like software. You can version it, script it, review it in a pull request and recreate it from scratch.
+- **Someone else's data centers.** AWS owns the buildings, servers, disks, switches, power and cooling. You never touch them.
+- **Renting, by the second.** You don't buy hardware. Many resources (such as Linux virtual machines) are billed per second after a short minimum; others per hour, per GB-month or per request. Small billing units make short experiments cheap, and you stop paying when you delete.
+- **Through an API.** Everything is an HTTPS call to an AWS endpoint ("create a virtual machine", "delete this database"). The console, the CLI and Terraform are just different ways of making those calls. So a data center behaves like software: you can version it, script it, review it in a pull request and recreate it from scratch.
 
 ### IaaS, PaaS and SaaS
 
@@ -45,7 +38,7 @@ Cloud services are often sorted by **how much of the stack the provider runs for
 | **PaaS** | Platform as a Service | Meal kit: ingredients arrive prepped, you just assemble | Your app code and data | OS, runtime, patching, scaling plumbing | AWS Elastic Beanstalk, Amazon RDS (managed database), AWS Lambda (often called "serverless" or FaaS, Function as a Service) |
 | **SaaS** | Software as a Service | Restaurant: you just eat | Your users and your data | Everything | Amazon Connect (contact center), and non-AWS examples like Gmail or Salesforce |
 
-The lines are fuzzy, and the exam doesn't ask you to classify services by these labels. What it *does* test is the underlying idea: **the more the provider manages, the less operational work you have**. You will see the phrase "with the **least operational overhead**" in many exam questions. That phrase is a hint to pick the more managed option.
+The lines are fuzzy, and the exam doesn't ask you to classify services. It tests the idea behind them: **the more the provider manages, the less operational work you have**. The common exam phrase "with the **least operational overhead**" is a hint to pick the more managed option.
 
 ### The Kubernetes angle: your EKS cluster is rented machines
 
@@ -55,11 +48,11 @@ Here is how your EKS world maps onto these layers:
 - The **worker nodes** your Pods run on are, in most clusters, **Amazon EC2 instances**: rented virtual machines in your own AWS account. That part is IaaS. Someone on your team (or a tool like Karpenter or EKS Auto Mode) chose their size, and the company pays for them per second.
 - When you created a `PersistentVolumeClaim`, a CSI driver probably created an **Amazon EBS volume** (a rented network disk). When you created a `Service` of type `LoadBalancer` or an `Ingress`, a controller probably created an **AWS load balancer**.
 
-So the Kubernetes objects you know are often thin wrappers that ask AWS to create real, billable resources. This track will keep pointing out which AWS resource sits behind each Kubernetes object. [Kubernetes to AWS](03-kubernetes-to-aws.md) covers that in depth.
+So the Kubernetes objects you know are often thin wrappers that ask AWS to create real, billable resources. [Kubernetes to AWS](03-kubernetes-to-aws.md) maps them in depth.
 
-### Deployment models (one paragraph)
+### Deployment models
 
-**Cloud** (or "cloud-native") means everything runs in a provider like AWS. **On-premises** means you run your own data center. **Hybrid** means both, connected by a VPN or a private link, which is very common in large companies and very common in exam questions ("the company has an on-premises data center and wants to..."). You will meet hybrid connectivity in [Networking basics](02-networking-basics.md).
+**Cloud** means everything runs in a provider like AWS. **On-premises** means your own data center. **Hybrid** means both, connected by a VPN or private link. Hybrid is common in large companies and in exam questions ("the company has an on-premises data center and wants to..."); see [Networking basics](02-networking-basics.md).
 
 ---
 
@@ -67,15 +60,15 @@ So the Kubernetes objects you know are often thin wrappers that ask AWS to creat
 
 ### The big ideas in plain words
 
-- **Elasticity.** Capacity can grow and shrink with demand, automatically. Think Kubernetes HPA (Horizontal Pod Autoscaler) plus Cluster Autoscaler, but for every layer: servers, databases, queues. At 3 a.m. you run 2 servers; on Black Friday you run 200.
-- **Pay-as-you-go.** You pay for actual use, not for peak capacity you bought "just in case".
-- **CapEx to OpEx.** CapEx (capital expenditure) is a big up-front purchase, like buying servers you depreciate over five years. OpEx (operating expenditure) is a running cost, like a monthly bill. The cloud turns hardware purchases into a utility bill. Finance teams care about this a lot.
-- **Global reach.** You can run in Europe, Asia and the Americas without signing a lease anywhere.
-- **Managed services.** AWS will run the database, the queue, the load balancer or the Kubernetes control plane for you, so your team writes product code instead of patching servers.
+- **Elasticity.** Capacity grows and shrinks with demand, automatically. Think HPA (Horizontal Pod Autoscaler) plus Cluster Autoscaler, but for every layer: 2 servers at 3 a.m., 200 on Black Friday.
+- **Pay-as-you-go.** You pay for actual use, not for peak capacity bought "just in case".
+- **CapEx to OpEx.** CapEx (capital expenditure) is a big up-front purchase, like servers you depreciate over five years. OpEx (operating expenditure) is a running cost, like a monthly bill. The cloud turns hardware purchases into a utility bill.
+- **Global reach.** Run in Europe, Asia and the Americas without signing a lease anywhere.
+- **Managed services.** AWS runs the database, queue, load balancer or Kubernetes control plane, so your team writes product code instead of patching servers.
 
 ### AWS's "six advantages of cloud computing"
 
-AWS lists six advantages in its introductory material. They are worth knowing because the exam's way of thinking comes straight from them.
+AWS lists six advantages in its introductory material. The exam's way of thinking comes straight from them.
 
 | # | Advantage (AWS wording, simplified) | What it means in practice |
 |---|---|---|
@@ -86,7 +79,7 @@ AWS lists six advantages in its introductory material. They are worth knowing be
 | 5 | **Stop spending money running and maintaining data centers** | No racking, cabling, cooling or hardware refresh. Spend engineering time on the product. |
 | 6 | **Go global in minutes** | Deploy close to users worldwide for lower latency, with a few clicks or API calls. |
 
-The cloud is not automatically cheaper. A big, steady workload that never changes size can be cheaper on owned hardware. The cloud wins on **flexibility and speed**, and it wins on cost when you actually use the elasticity and turn things off.
+The cloud is not automatically cheaper. A big, steady workload can be cheaper on owned hardware. The cloud wins on **flexibility and speed**, and on cost when you actually use the elasticity and turn things off.
 
 ---
 
@@ -156,18 +149,16 @@ flowchart LR
 
 The console is the website at `console.aws.amazon.com`. A quick tour of the top navigation bar, left to right:
 
-| What you see | What it does | Why a beginner should care |
-|---|---|---|
-| **AWS logo / Console Home** | Back to the home page with recently visited services and widgets (cost, health). | Your starting point. |
-| **Service search bar** | Type "S3", "EC2", "billing" and jump straight there. It also finds features and docs. | Faster than browsing menus. Use it for everything. |
-| **CloudShell icon** (a small terminal symbol) | Opens a Linux shell in the browser, already logged in as you, with the AWS CLI installed. No extra charge, and a small persistent home directory per Region. | The easiest way to try CLI commands without installing anything. |
-| **Notifications / Help / Settings icons** | Service events, docs, console preferences (language, default Region). | Set a default Region here. |
-| **Region selector** (e.g., "N. Virginia") | Chooses which Region you're looking at. | ⚠️ The #1 "where did my server go?" moment. Most resources are Regional, so if you switch Region, your EC2 instances seem to vanish. They haven't; you're just looking at a different Region. For global services like IAM, the selector shows "Global". |
-| **Account menu** (your user / account name) | Shows the account ID, your identity, and links to Billing and Cost Management, Security credentials, switch role, and sign out. | Billing lives here. Copy the account ID from here. |
+| What you see | What it does |
+|---|---|
+| **AWS logo / Console Home** | Home page with recently visited services and widgets (cost, health). |
+| **Service search bar** | Type "S3", "EC2" or "billing" and jump straight there. Faster than browsing menus. |
+| **CloudShell icon** (a small terminal symbol) | Opens a Linux shell in the browser, already logged in as you, with the AWS CLI installed, at no extra charge. The easiest way to try CLI commands. |
+| **Notifications / Help / Settings icons** | Service events, docs, and console preferences such as a default Region. |
+| **Region selector** (e.g., "N. Virginia") | Chooses which Region you're looking at. ⚠️ The #1 "where did my server go?" moment: switch Region and your EC2 instances seem to vanish. They haven't; you're looking at a different Region. For global services like IAM it shows "Global". |
+| **Account menu** (your user / account name) | Account ID, your identity, Billing and Cost Management, Security credentials, switch role, sign out. |
 
-Inside a service, the left sidebar lists that service's resource types (for EC2: Instances, AMIs, Volumes, Security Groups, Load Balancers...). The main area is usually a table of resources with an **Actions** button and a **Create** button.
-
-The console is great for **learning and exploring**. For anything you want to repeat, use the CLI or IaC.
+Inside a service, the left sidebar lists its resource types (for EC2: Instances, AMIs, Volumes, Security Groups...), and the main area is a table of resources with **Create** and **Actions** buttons. The console is great for learning and exploring; for anything you want to repeat, use the CLI or IaC.
 
 ### 4.2 The AWS CLI
 
@@ -181,7 +172,7 @@ aws ec2 describe-instances --region eu-west-1
 
 The shape is always `aws <service> <operation> [options]`, which maps almost one-to-one to the service's API operations (`describe-instances` calls the EC2 `DescribeInstances` API).
 
-**How credentials work.** The CLI needs credentials to sign requests. It looks for them in a fixed order and uses the first it finds. Simplified:
+**How credentials work.** The CLI looks for credentials in a fixed order and uses the first it finds (simplified):
 
 1. Options on the command line (for example `--profile`).
 2. Environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_PROFILE`, `AWS_REGION`).
@@ -253,9 +244,9 @@ flowchart TB
 
 Four factors, roughly in the order the exam weighs them:
 
-1. **Compliance and data residency.** Laws or contracts may require data to stay in a country or bloc (e.g., "customer data must stay in the EU"). This overrides everything else. Data you put in a Region stays there unless you move it.
-2. **Latency.** Choose a Region close to your users. A user in Sydney talking to a server in Virginia pays roughly 200 ms per round trip just from distance.
-3. **Service availability.** Not every service or feature is in every Region. New services usually launch in a few large Regions first.
+1. **Compliance and data residency.** Laws or contracts may require data to stay in a country or bloc ("customer data must stay in the EU"). This overrides everything else. Data stays in its Region unless you move it.
+2. **Latency.** Choose a Region close to your users. Sydney to Virginia costs roughly 200 ms per round trip from distance alone.
+3. **Service availability.** Not every service or feature is in every Region; new ones usually launch in a few large Regions first.
 4. **Price.** The same resource can cost different amounts in different Regions.
 
 ### Regional vs global vs zonal services
@@ -355,21 +346,20 @@ On both plans, more than 30 services keep an **always-free** allowance (small mo
 
 Cloud resources don't stop when you close the browser tab. A few patterns cause most surprise bills:
 
-- **Things that charge by the hour even when idle.** A NAT gateway, a load balancer, an RDS instance or an EC2 instance costs money for every hour it exists, even with zero traffic. For example, one NAT gateway left running for a month costs approx. tens of dollars before any data flows through it.
-- **Things left in another Region.** You created a lab in `us-east-1`, then switched the console to `eu-west-1` and forgot. Check every Region you used.
-- **Orphaned leftovers.** Deleting an EC2 instance doesn't always delete its EBS volumes, snapshots or Elastic IP addresses. Deleting an EKS cluster doesn't automatically delete load balancers or volumes created by Kubernetes controllers if you delete the cluster before the `Service` or `PVC` objects.
-- **Leaked access keys.** Keys pushed to a public Git repository get found by bots within minutes and used to run expensive instances. Never put keys in code.
+- **Hourly charges while idle.** NAT gateways, load balancers, RDS and EC2 instances cost money every hour they exist, even with zero traffic. One forgotten NAT gateway costs approx. tens of dollars a month before any data flows.
+- **Another Region.** You built a lab in `us-east-1`, switched the console to `eu-west-1`, and forgot. Check every Region you used.
+- **Orphaned leftovers.** Deleting an EC2 instance doesn't always delete its EBS volumes, snapshots or Elastic IPs. Deleting an EKS cluster before its `Service` and `PVC` objects can leave behind load balancers and volumes the controllers created.
+- **Leaked access keys.** Keys pushed to a public Git repository are found by bots within minutes and used to run expensive instances. Never put keys in code.
 
 **Habit to build now:** every lab ends with a cleanup step, done the same day. Tag your resources (for example `project=saa-study`) so you can find them.
 
 ### Budgets and alerts
 
-- **AWS Budgets:** set a monthly budget (even $1 or a "zero spend" budget) and get an email when actual or forecasted spend crosses a threshold. Set this up on day one.
-- **AWS Cost Anomaly Detection:** uses machine learning to spot unusual spending and alerts you.
-- **AWS Cost Explorer:** charts of what you spent, by service, Region or tag. Your "where did the money go?" tool.
-- **Billing alarms in Amazon CloudWatch:** an older way to alert on the estimated charges metric.
+- **AWS Budgets:** set a monthly budget (even a "zero spend" budget) and get an email when actual or forecasted spend crosses a threshold. Set this up on day one.
+- **AWS Cost Anomaly Detection:** spots unusual spending and alerts you.
+- **AWS Cost Explorer:** charts of spend by service, Region or tag. Your "where did the money go?" tool.
 
-Alerts are a safety net, not a substitute for cleanup: they tell you after the money has started flowing. See [Cost management services](services/cost-management.md) and [Notes 10](../notes/10-cost-optimization.md).
+Alerts are a safety net, not a substitute for cleanup: they fire after the money has started flowing. See [Cost management services](services/cost-management.md) and [Notes 10](../notes/10-cost-optimization.md).
 
 ---
 
@@ -414,8 +404,8 @@ flowchart LR
 
 1. **DNS.** The user types `www.example.com`. Their browser asks DNS where that is. [Amazon Route 53](services/networking.md#amazon-route-53), AWS's DNS service, answers with the address of the CloudFront distribution. (Kubernetes analogy: like CoreDNS resolving a Service name, but for the public internet.)
 2. **Edge and caching.** The browser opens an HTTPS connection to the nearest edge location of [Amazon CloudFront](services/networking.md#amazon-cloudfront), AWS's CDN (content delivery network). If the request is for a static file (an image, a JavaScript bundle) and CloudFront has a cached copy, it returns it immediately. If not, it fetches it from the **origin**, here an [Amazon S3](services/storage.md#amazon-s3) bucket, and caches it for next time.
-3. **Dynamic requests go to the load balancer.** Requests that need your code (e.g., `/api/orders`) are forwarded to an **Application Load Balancer** from [Elastic Load Balancing](services/networking.md#elastic-load-balancing-elb). The ALB sits in **public subnets** in two AZs inside your [Amazon VPC](services/networking.md#amazon-vpc) (virtual private cloud: your own isolated network in AWS). It usually terminates TLS. (Kubernetes analogy: the ALB plays the role of your Ingress controller. In EKS, the AWS Load Balancer Controller literally creates an ALB from an Ingress object.)
-4. **Application tier.** The ALB forwards each request to a healthy target: an [Amazon EC2](services/compute.md#amazon-ec2) instance or an [Amazon ECS](services/containers.md#amazon-ecs) task (a running container). These sit in **private subnets** with no public IP addresses, so the internet can't reach them directly; only the load balancer can. An Auto Scaling group (or ECS service auto scaling) adds or removes capacity with load, like HPA. They are spread across two AZs so one AZ failing doesn't take the site down.
+3. **Dynamic requests go to the load balancer.** Requests that need your code (e.g., `/api/orders`) go to an **Application Load Balancer** from [Elastic Load Balancing](services/networking.md#elastic-load-balancing-elb). It sits in **public subnets** in two AZs inside your [Amazon VPC](services/networking.md#amazon-vpc) (virtual private cloud: your own isolated network in AWS) and usually terminates TLS. (Kubernetes analogy: the ALB is your Ingress controller; in EKS, the AWS Load Balancer Controller literally creates an ALB from an Ingress.)
+4. **Application tier.** The ALB forwards each request to a healthy [Amazon EC2](services/compute.md#amazon-ec2) instance or [Amazon ECS](services/containers.md#amazon-ecs) task (a running container). These sit in **private subnets** with no public IPs, so only the load balancer can reach them. Auto Scaling adds or removes capacity with load, like HPA, across two AZs so one AZ failing doesn't take the site down.
 5. **Data tier.** The app queries a relational database on [Amazon RDS](services/databases.md#amazon-rds), in its own private subnets. With **Multi-AZ**, RDS keeps a synchronized standby copy in a second AZ and fails over to it automatically if the primary fails.
 6. **Files.** User uploads and generated files go to [Amazon S3](services/storage.md#amazon-s3), not the server's local disk, so any server can read them and servers can be replaced freely. The app gets permission through an **IAM role** attached to the instance or task, managed by [AWS IAM](services/identity-governance.md#aws-iam). No access keys live in the code. (Kubernetes analogy: a ServiceAccount with IRSA or Pod Identity.)
 7. **Observability.** Application logs, metrics (CPU, request counts, latency) and alarms go to [Amazon CloudWatch](services/management-monitoring.md#amazon-cloudwatch). An alarm can page someone or trigger scaling.
@@ -460,8 +450,8 @@ Exact colors and line styles vary between icon-set versions and authors, so trus
 
 **Two reading tips:**
 
-- **Where a box sits shows its scope.** Services drawn *inside* the VPC (EC2, RDS, load balancers, NAT gateways) have network interfaces in your subnets. Services drawn *outside* the VPC but inside the Region (S3, DynamoDB, SQS, Lambda not attached to a VPC) are Regional services that AWS runs; your VPC reaches them over the AWS network or through a **VPC endpoint**.
-- **Something drawn across the AZ boxes** (like a load balancer straddling two AZs) is a Regional or multi-AZ resource. Something drawn inside one AZ box is zonal.
+- **Inside vs outside the VPC.** Things drawn *inside* the VPC (EC2, RDS, load balancers, NAT gateways) have network interfaces in your subnets. Things drawn *outside* it but inside the Region (S3, DynamoDB, SQS) are Regional services AWS runs; your VPC reaches them over the AWS network or through a **VPC endpoint**.
+- **Across vs inside an AZ box.** A load balancer straddling two AZ boxes is multi-AZ; something inside one AZ box is zonal.
 
 ### The icons
 
@@ -473,9 +463,9 @@ Each service has its own square icon. The current icon set color-codes by catego
 - **Red:** security, identity and compliance (IAM, KMS, WAF).
 - **Pink:** application integration and management tools (SQS, SNS, CloudWatch).
 
-Database icons have their own category color. Inside a group, a smaller **resource icon** shows a specific thing: an EC2 instance, an RDS DB instance, an S3 bucket, a NAT gateway, an internet gateway (often a small cloud-with-arrows symbol on the VPC edge). Arrows usually show the direction of requests or data flow; dashed arrows often mean replication, async messages or optional paths.
+Database icons have their own category color. Smaller **resource icons** show specific things: an EC2 instance, an RDS DB instance, an S3 bucket, a NAT gateway, an internet gateway (usually drawn on the VPC's edge). Arrows show the direction of requests or data; dashed arrows often mean replication, async messages or optional paths.
 
-**How to practise:** open any "AWS Reference Architecture" or an architecture blog post, cover the text, and narrate the request flow aloud like in [section 8](#8-how-services-fit-together). If you can say which tier each box is in, which AZ, and whether it's public or private, you're reading it right.
+**How to practise:** open an AWS reference architecture, cover the text, and narrate the request flow aloud as in [section 8](#8-how-services-fit-together): which tier each box is in, which AZ, public or private.
 
 ---
 
@@ -529,12 +519,7 @@ SAA-C03 is an **architecture** exam. It describes a situation and asks you to ch
 - ❌ **Deep Kubernetes.** EKS appears as "the company already uses Kubernetes" or "wants an open-source-compatible orchestrator". You won't be asked about Pod specs or Helm. Your Kubernetes knowledge is a bridge for *understanding* AWS, not an exam topic in itself.
 - ❌ **Exact prices.** You need to know relative cost ("Spot is cheapest but can be interrupted"), not dollar figures.
 
-### A realistic beginner strategy
-
-1. Learn the **core services** first, the ones in section 8: VPC, EC2, ELB, Auto Scaling, S3, RDS, IAM, CloudWatch, Route 53, CloudFront. Then Lambda, DynamoDB, SQS, SNS, EBS, EFS, KMS.
-2. For each service, learn **when to use it, when not to, and what it's usually compared with**. The [services pages](services/README.md) are organized that way.
-3. Do the labs, even if the exam isn't hands-on. Clicking through a VPC once makes a dozen exam questions obvious.
-4. Then move to the [main notes](../notes/01-iam-multi-account.md) and practice questions.
+**Beginner priority:** learn the section 8 services first (VPC, EC2, ELB, Auto Scaling, S3, RDS, IAM, CloudWatch, Route 53, CloudFront), then Lambda, DynamoDB, SQS, SNS, EBS, EFS and KMS. For each, learn when to use it, when not to, and what it's usually compared with. The [services pages](services/README.md) are organized that way.
 
 ---
 
